@@ -23,7 +23,7 @@ public class SpreadServer extends Thread {
       this.messagesHistory = new MessagesHistory();
       this.targetsList = targetsList;
       this.targetPort = port;
-      
+
       try {
          this.localHost = InetAddress.getLocalHost();
       } catch (Exception ex) {
@@ -41,16 +41,16 @@ public class SpreadServer extends Thread {
 
       while (true) {
          try {
-            socket = server.accept();            
+            socket = server.accept();
             socketReader = new Scanner(socket.getInputStream());
-            message = socketReader.nextLine();            
-            
+            message = socketReader.nextLine();
+
             if (socket.getInetAddress().getHostAddress().equals(localHost.getHostAddress())) {
                System.out.print("\n>> Trying to send a new message: " + message);
             } else {
-               System.out.print("\n>> You've received a new message: " + message); 
-            }            
-            
+               System.out.print("\n>> You've received a new message: " + message);
+            }
+
             socketReader.close();
             socket.close();
          } catch (Exception ex) {
