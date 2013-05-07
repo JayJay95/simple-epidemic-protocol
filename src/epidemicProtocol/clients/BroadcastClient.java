@@ -13,7 +13,7 @@ public class BroadcastClient extends Thread {
    
    /**
     * Initialize the object with a defined {@link epidemicProtocol.servers.TargetsListServer} port.
-    * This port was defined in {@link epidemicProtocol.Main}.
+    * This port was defined in {@link epidemicProtocol.view.MainWindow#TARGETS_LIST_PORT}.
     *
     * @param port Port used in the {@link epidemicProtocol.servers.TargetsListServer}
     */
