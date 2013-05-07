@@ -8,6 +8,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * 
+ * @author Lucas S Bueno
+ */
 public class SpreadServer extends Thread {
 
    private MessagesHistory messagesHistory;
@@ -33,6 +37,8 @@ public class SpreadServer extends Thread {
 
    @Override
    public void run() {
+      System.out.println("Epidemic Protocol Online...\n");
+
       try {
          server = new ServerSocket(targetPort);
       } catch (IOException ex) {
@@ -46,9 +52,9 @@ public class SpreadServer extends Thread {
             message = socketReader.nextLine();
 
             if (socket.getInetAddress().getHostAddress().equals(localHost.getHostAddress())) {
-               System.out.print("\n>> Trying to send a new message: " + message);
+               System.out.println(">> Trying to send a new message: " + message);
             } else {
-               System.out.print("\n>> You've received a new message: " + message);
+               System.out.println(">> You've received a new message: " + message);
             }
 
             socketReader.close();

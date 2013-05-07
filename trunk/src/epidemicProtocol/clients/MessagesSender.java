@@ -3,7 +3,6 @@ package epidemicProtocol.clients;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Scanner;
 
 /**
  * Thread that send a message from some input of a user to local
@@ -21,12 +20,15 @@ public class MessagesSender extends Thread {
    private PrintStream socketWriter; //stream used to write in the socket output
 
    /**
-    * Initialize the object with a defined {@link epidemicProtocol.servers.SpreadServer} port. This
-    * port was defined in {@link epidemicProtocol.Main}.
+    * Initialize the object with a defined message and {@link epidemicProtocol.servers.SpreadServer}
+    * port. This port was defined in {@link epidemicProtocol.view.MainWindow#SPREAD_SERVER_PORT}.
     *
-    * @param port Port used in the {@link epidemicProtocol.servers.SpreadServer}
+    * @param message Message that will be sent to the {@link epidemicProtocol.servers.SpreadServer}
+    * using a socket.
+    * @param port Port used in the {@link epidemicProtocol.servers.SpreadServer}.
     */
-   public MessagesSender(int port) {
+   public MessagesSender(String message, int port) {
+      this.message = message;
       this.targetPort = port;
 
       try {
@@ -43,39 +45,28 @@ public class MessagesSender extends Thread {
     */
    @Override
    public void run() {
-      try {
-         sleep(10000);
-      } catch (Exception ex) {
-         System.err.println("Error: " + ex.getMessage());
+      /**
+       * If the message is empty we don't have something to send, so alert it in the user view
+       */
+      if (message.isEmpty()) {
+         System.out.println(">> You need to enter something to send...");
+
+         return;
       }
 
-      Scanner input = new Scanner(System.in);
-      System.out.println("Epidemic Protocol Online...\n");
-
       /*
-       * Main loop, that take the user's input and send the messages to the SpredServer
+       * Create a new socket and write in it's output the user's message
        */
-      while (true) {
-         System.out.print(">> Enter a message to spread: ");
+      try {
+         socket = new Socket(localHost, targetPort);
+         socketWriter = new PrintStream(socket.getOutputStream());
+         socketWriter.println(message);
+         socketWriter.flush();
 
-         while ((message = input.nextLine()).isEmpty()) {
-            System.out.print(">> Enter a message to spread: ");
-         }
-
-         /*
-          * Create a new socket and write in it's output the user's message
-          */
-         try {
-            socket = new Socket(localHost, targetPort);
-            socketWriter = new PrintStream(socket.getOutputStream());
-            socketWriter.println(message);
-            socketWriter.flush();
-
-            socketWriter.close();
-            socket.close();
-         } catch (Exception ex) {
-            System.err.println("Error: " + ex.getMessage());
-         }
+         socketWriter.close();
+         socket.close();
+      } catch (Exception ex) {
+         System.err.println("Error: " + ex.getMessage());
       }
    }
 }

@@ -2,6 +2,10 @@ package epidemicProtocol.servers;
 
 import epidemicProtocol.control.TargetsList;
 
+/**
+ * 
+ * @author Lucas S Bueno
+ */
 public class TargetsListServer extends Thread {
 
    private TargetsList targetsList;
