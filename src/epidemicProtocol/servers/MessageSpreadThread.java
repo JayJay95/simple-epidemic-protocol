@@ -27,7 +27,7 @@ public class MessageSpreadThread extends Thread {
    }
 
    /**
-    * This thread only try to send the specified message to a target host:port. If an error accur
+    * This thread only try to send the specified message to a target host:port. If an error occur
     * with the creation of the socket, the target host is deleted from the
     * {@link epidemicProtocol.control.TargetsList}.
     */
@@ -45,6 +45,7 @@ public class MessageSpreadThread extends Thread {
          System.err.println("Error: " + ex.getMessage());
          System.err.println("Deleting " + targetHost + " from targets list...");
          targetsList.tryToRemove(targetHost);
+         ex.printStackTrace();
       }
    }
 }
