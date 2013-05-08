@@ -1,7 +1,7 @@
 package epidemicProtocol.control;
 
 /**
- * Struct of the messages that will be stored in the
+ * Structure of the messages that will be stored in the
  * {@link epidemicProtocol.control.MessagesHistory}. The message have two possible status:
  * {@link epidemicProtocol.control.MessageStatus#INFECTIVE} and
  * {@link epidemicProtocol.control.MessageStatus#REMOVED}. It starts in the
@@ -38,7 +38,7 @@ public class MessageEntry {
    }
 
    /**
-    * Incrises the rejection count of this message. When this count exceeds
+    * Increases the rejection count of this message. When this count exceeds
     * {@link epidemicProtocol.control.MessageEntry#MAX_NEGATIVE_COUNT} the status of the message is
     * changed to {@link epidemicProtocol.control.MessageStatus#REMOVED}.
     */
