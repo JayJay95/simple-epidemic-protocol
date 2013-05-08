@@ -4,6 +4,11 @@ import static java.lang.Thread.sleep;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * This thread sends simple broadcast messages in the network periodically. With it we can make a
@@ -14,11 +19,12 @@ import java.net.InetAddress;
 public class BroadcastClient extends Thread {
 
    private int targetPort; //target port used to make the broadcast communication 
-   private int repeatTime; //time of wait to repeat the operation in milliseconds
-   private InetAddress broadcastAddress;
+   private int repeatTime; //time of wait to repeat the operation in milliseconds   
+   List<InetAddress> broadcastList;
    private DatagramSocket socket;
    private DatagramPacket packet;
    private final byte[] message = "#".getBytes(); //default message to be sent
+   private final int MAX_REPEAT_TIME = 60000;
 
    /**
     * Initialize the object with a defined {@link epidemicProtocol.servers.TargetsListServer} port.
@@ -31,9 +37,41 @@ public class BroadcastClient extends Thread {
       this.repeatTime = 5000;
 
       try {
-         broadcastAddress = InetAddress.getByName("255.255.255.255");
+         broadcastList = new ArrayList<>();
+
+         //get network interfaces
+         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+         InetAddress localHost = InetAddress.getLocalHost();
+         
+         while (interfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = interfaces.nextElement();
+            
+            //verify if the interface is loopback.
+            if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+               continue;
+            }
+
+            //for each interface, get it's broadcast address
+            for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+               InetAddress address = interfaceAddress.getAddress();
+
+               if (!localHost.getHostAddress().equals(address.getHostAddress())) {
+                  continue;
+               }
+               
+               InetAddress broadcastAddress = interfaceAddress.getBroadcast();
+
+               //IPv6 test
+               if (broadcastAddress == null) {
+                  continue;
+               } else {
+                  broadcastList.add(broadcastAddress);                  
+               }
+            }
+         }         
       } catch (Exception ex) {
          System.err.println("Error: " + ex.getMessage());
+         ex.printStackTrace();
       }
    }
 
@@ -43,6 +81,7 @@ public class BroadcastClient extends Thread {
          sleep(repeatTime);
       } catch (Exception ex) {
          System.err.println("Error: " + ex.getMessage());
+         ex.printStackTrace();
       }
 
       /*
@@ -52,20 +91,23 @@ public class BroadcastClient extends Thread {
        */
       while (true) {
          try {
-            socket = new DatagramSocket();
-            socket.setBroadcast(true);
-            packet = new DatagramPacket(message, message.length, broadcastAddress, targetPort);
-            socket.send(packet);
+            for (InetAddress broadcastAddress : broadcastList) {
+               socket = new DatagramSocket();
+               socket.setBroadcast(true);
+               packet = new DatagramPacket(message, message.length, broadcastAddress, targetPort);
+               socket.send(packet);
 
-            socket.close();
+               socket.close();
+            }
 
-            if (repeatTime < 240000) {
+            if (repeatTime < MAX_REPEAT_TIME) {
                repeatTime += 5000;
             }
 
             sleep(repeatTime);
          } catch (Exception ex) {
             System.err.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
          }
       }
    }

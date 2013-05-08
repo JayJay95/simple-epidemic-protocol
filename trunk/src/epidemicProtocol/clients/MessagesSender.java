@@ -35,6 +35,7 @@ public class MessagesSender extends Thread {
          this.localHost = InetAddress.getLocalHost();
       } catch (Exception ex) {
          System.err.println("Error: " + ex.getMessage());
+         ex.printStackTrace();
       }
    }
 
@@ -45,6 +46,13 @@ public class MessagesSender extends Thread {
     */
    @Override
    public void run() {
+      /*
+       * The message can't start with '#'. If it occur, delete the '#' characters 
+       */
+      while (!message.isEmpty() && message.charAt(0) == '#') {
+         message = message.substring(1);
+      }
+
       /*
        * If the message is empty we don't have something to send, so alert it in the user view
        */
@@ -63,10 +71,11 @@ public class MessagesSender extends Thread {
          socketWriter.println(message);
          socketWriter.flush();
 
-         socketWriter.close();
+         socketWriter.close();         
          socket.close();
       } catch (Exception ex) {
          System.err.println("Error: " + ex.getMessage());
+         ex.printStackTrace();
       }
    }
 }

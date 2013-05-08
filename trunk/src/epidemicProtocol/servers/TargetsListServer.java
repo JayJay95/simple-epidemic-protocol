@@ -31,6 +31,7 @@ public class TargetsListServer extends Thread {
          packet = new DatagramPacket(packetBytes, packetBytes.length);
       } catch (Exception ex) {
          System.err.println("Error: " + ex.getMessage());
+         ex.printStackTrace();
       }
    }
 
@@ -50,6 +51,7 @@ public class TargetsListServer extends Thread {
             }
          } catch (Exception ex) {
             System.err.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
          }
       }
    }

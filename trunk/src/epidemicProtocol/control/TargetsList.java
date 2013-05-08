@@ -3,10 +3,11 @@ package epidemicProtocol.control;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JTextArea;
 
 /**
- * Structure that store a list of local computers addresses. These address are found with the broadcast
- * messages (sent with {@link epidemicProtocol.clients.BroadcastClient}) received in
+ * Structure that store a list of local computers addresses. These address are found with the
+ * broadcast messages (sent with {@link epidemicProtocol.clients.BroadcastClient}) received in
  * {@link epidemicProtocol.servers.TargetsListServer}. This list is used to spread the messages
  * received in the {@link epidemicProtocol.servers.SpreadServer}.
  *
@@ -16,13 +17,15 @@ public class TargetsList {
 
    private List<String> addressesList;
    private String localHost;
+   private JTextArea output;
    /**
     * variable used as index to get a address from the addressesList. It is being added in a way to
     * make a circular rotation in the list.
     */
    private int auxCount;
 
-   public TargetsList() {
+   public TargetsList(JTextArea output) {
+      this.output = output;
       addressesList = new ArrayList<>();
       auxCount = 0;
 
@@ -30,6 +33,7 @@ public class TargetsList {
          localHost = InetAddress.getLocalHost().getHostAddress();
       } catch (Exception ex) {
          System.err.println("Error: " + ex.getMessage());
+         ex.printStackTrace();
       }
    }
 
@@ -42,10 +46,14 @@ public class TargetsList {
     */
    public boolean tryToAdd(String address) {
       synchronized (this) {
+         boolean result;
+
          if ((!addressesList.contains(address)) && (!address.equals(localHost))) {
-            return addressesList.add(address);
+            result = addressesList.add(address);
+            updateIpList();
+            return result;
          }
-         
+
          return false;
       }
    }
@@ -58,7 +66,10 @@ public class TargetsList {
     */
    public boolean tryToRemove(String address) {
       synchronized (this) {
-         return addressesList.remove(address);
+         boolean result = addressesList.remove(address);
+         updateIpList();
+         
+         return result;
       }
    }
 
@@ -84,6 +95,15 @@ public class TargetsList {
          }
 
          return null;
+      }
+   }
+
+   private void updateIpList() {
+      output.setText("");
+
+      for (String address : addressesList) {
+         output.append(address);
+         output.append("\n");
       }
    }
 }

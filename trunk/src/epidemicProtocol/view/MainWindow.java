@@ -28,6 +28,11 @@ public class MainWindow extends javax.swing.JFrame {
     * Port that will be used to send messages from one computer to other.
     */
    private static final int SPREAD_SERVER_PORT = 60001;
+   /**
+    * IP's list that will be used in {@link epidemicProtocol.servers.TargetsListServer} to store
+    * other computers in the network.
+    */
+   private static TargetsList targetsList;
 
    /**
     * Creates new form MainWindow
@@ -38,6 +43,8 @@ public class MainWindow extends javax.swing.JFrame {
       caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
       redirectSystemStreams(); //redirect the System output to the TextArea in the interface
       messageTextField.requestFocus();
+      this.setLocationRelativeTo(null);
+      targetsList = new TargetsList(ipListTextArea);      
    }
 
    /**
@@ -53,6 +60,8 @@ public class MainWindow extends javax.swing.JFrame {
       messageTextField = new javax.swing.JTextField();
       spreadLabel = new javax.swing.JLabel();
       sendButton = new javax.swing.JButton();
+      ipListScroll = new javax.swing.JScrollPane();
+      ipListTextArea = new javax.swing.JTextArea();
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
       setTitle("Epidemic Protocol");
@@ -82,6 +91,11 @@ public class MainWindow extends javax.swing.JFrame {
          }
       });
 
+      ipListTextArea.setEditable(false);
+      ipListTextArea.setColumns(20);
+      ipListTextArea.setRows(5);
+      ipListScroll.setViewportView(ipListTextArea);
+
       javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
       getContentPane().setLayout(layout);
       layout.setHorizontalGroup(
@@ -89,21 +103,27 @@ public class MainWindow extends javax.swing.JFrame {
          .addGroup(layout.createSequentialGroup()
             .addContainerGap()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-               .addComponent(outputScrollPane)
                .addComponent(messageTextField)
-               .addGroup(layout.createSequentialGroup()
-                  .addComponent(spreadLabel)
-                  .addGap(0, 718, Short.MAX_VALUE))
                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                   .addGap(0, 0, Short.MAX_VALUE)
-                  .addComponent(sendButton, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                  .addComponent(sendButton, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+               .addGroup(layout.createSequentialGroup()
+                  .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(spreadLabel)
+                        .addGap(0, 444, Short.MAX_VALUE))
+                     .addComponent(outputScrollPane))
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                  .addComponent(ipListScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addContainerGap())
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             .addContainerGap()
-            .addComponent(outputScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+               .addComponent(ipListScroll)
+               .addComponent(outputScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE))
             .addGap(18, 18, 18)
             .addComponent(spreadLabel)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -167,7 +187,6 @@ public class MainWindow extends javax.swing.JFrame {
          @Override
          public void run() {
             new MainWindow().setVisible(true);
-            TargetsList targetsList = new TargetsList();
             System.out.println("Starting Targets List Sever...");
             new TargetsListServer(targetsList, TARGETS_LIST_PORT).start();
             System.out.println("Starting Broadcast Client...");
@@ -201,9 +220,10 @@ public class MainWindow extends javax.swing.JFrame {
       };
 
       System.setOut(new PrintStream(out, true));
-      System.setErr(new PrintStream(out, true));
    }
    // Variables declaration - do not modify//GEN-BEGIN:variables
+   private javax.swing.JScrollPane ipListScroll;
+   private javax.swing.JTextArea ipListTextArea;
    private javax.swing.JTextField messageTextField;
    private javax.swing.JScrollPane outputScrollPane;
    private javax.swing.JTextArea outputView;
