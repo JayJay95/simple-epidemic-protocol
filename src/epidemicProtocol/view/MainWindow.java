@@ -37,6 +37,7 @@ public class MainWindow extends javax.swing.JFrame {
       DefaultCaret caret = (DefaultCaret) outputView.getCaret();
       caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
       redirectSystemStreams(); //redirect the System output to the TextArea in the interface
+      messageTextField.requestFocus();
    }
 
    /**
@@ -47,7 +48,7 @@ public class MainWindow extends javax.swing.JFrame {
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
 
-      jScrollPane1 = new javax.swing.JScrollPane();
+      outputScrollPane = new javax.swing.JScrollPane();
       outputView = new javax.swing.JTextArea();
       messageTextField = new javax.swing.JTextField();
       spreadLabel = new javax.swing.JLabel();
@@ -59,9 +60,11 @@ public class MainWindow extends javax.swing.JFrame {
 
       outputView.setEditable(false);
       outputView.setColumns(20);
+      outputView.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
       outputView.setRows(5);
-      jScrollPane1.setViewportView(outputView);
+      outputScrollPane.setViewportView(outputView);
 
+      messageTextField.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
       messageTextField.addKeyListener(new java.awt.event.KeyAdapter() {
          public void keyPressed(java.awt.event.KeyEvent evt) {
             messageTextFieldKeyPressed(evt);
@@ -71,6 +74,7 @@ public class MainWindow extends javax.swing.JFrame {
       spreadLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
       spreadLabel.setText("Enter a message to spread:");
 
+      sendButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
       sendButton.setText("Send");
       sendButton.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -85,7 +89,7 @@ public class MainWindow extends javax.swing.JFrame {
          .addGroup(layout.createSequentialGroup()
             .addContainerGap()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-               .addComponent(jScrollPane1)
+               .addComponent(outputScrollPane)
                .addComponent(messageTextField)
                .addGroup(layout.createSequentialGroup()
                   .addComponent(spreadLabel)
@@ -99,7 +103,7 @@ public class MainWindow extends javax.swing.JFrame {
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             .addContainerGap()
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+            .addComponent(outputScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
             .addGap(18, 18, 18)
             .addComponent(spreadLabel)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -120,6 +124,7 @@ public class MainWindow extends javax.swing.JFrame {
    private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
       new MessagesSender(messageTextField.getText(), SPREAD_SERVER_PORT).start();
       messageTextField.setText("");
+      messageTextField.requestFocus();
    }//GEN-LAST:event_sendButtonActionPerformed
 
    private void messageTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_messageTextFieldKeyPressed
@@ -131,7 +136,7 @@ public class MainWindow extends javax.swing.JFrame {
    /**
     * Entry point of the application. Starts the user's interface and the 3 initial threads.
     *
-    * @param args Args in this main fuction are not used.
+    * @param args Args in this main function are not used.
     */
    public static void main(String args[]) {
       /* Set the Nimbus look and feel */
@@ -199,8 +204,8 @@ public class MainWindow extends javax.swing.JFrame {
       System.setErr(new PrintStream(out, true));
    }
    // Variables declaration - do not modify//GEN-BEGIN:variables
-   private javax.swing.JScrollPane jScrollPane1;
    private javax.swing.JTextField messageTextField;
+   private javax.swing.JScrollPane outputScrollPane;
    private javax.swing.JTextArea outputView;
    private javax.swing.JButton sendButton;
    private javax.swing.JLabel spreadLabel;

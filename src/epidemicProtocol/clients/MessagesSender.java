@@ -13,7 +13,7 @@ import java.net.Socket;
  */
 public class MessagesSender extends Thread {
 
-   private InetAddress localHost; //local host adress, used to send the message in a computer
+   private InetAddress localHost; //local host address, used to send the message in a computer
    private int targetPort; //port of the SreadServer
    private Socket socket; //socket used to make the connection with the SpreadServer
    private String message; //user message that will be sent 
@@ -45,7 +45,7 @@ public class MessagesSender extends Thread {
     */
    @Override
    public void run() {
-      /**
+      /*
        * If the message is empty we don't have something to send, so alert it in the user view
        */
       if (message.isEmpty()) {

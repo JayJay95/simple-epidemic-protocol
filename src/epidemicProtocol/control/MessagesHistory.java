@@ -50,7 +50,7 @@ public class MessagesHistory {
       return false;
    }
 
-   public MessageEntry getMessage(String message) {
+   public MessageEntry getMessageEntry(String message) {
       MessageEntry messageWrapped = new MessageEntry(message);
       int index = messagesList.indexOf(messageWrapped);
 
