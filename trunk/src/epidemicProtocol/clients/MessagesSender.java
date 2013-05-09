@@ -71,7 +71,7 @@ public class MessagesSender extends Thread {
          socketWriter.println(message);
          socketWriter.flush();
 
-         socketWriter.close();         
+         socketWriter.close();
          socket.close();
       } catch (Exception ex) {
          System.err.println("Error: " + ex.getMessage());
