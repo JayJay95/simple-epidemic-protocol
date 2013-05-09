@@ -47,7 +47,8 @@ public class SpreadServer extends Thread {
             message = socketReader.nextLine();
             InetAddress senderHost = socket.getInetAddress();
 
-            new MessageSpreadThread(targetsList, messagesHistory, targetPort, message, senderHost).start();
+            new MessageSpreadThread(targetsList, messagesHistory, targetPort, message, senderHost)
+                    .start();
 
             socketReader.close();
             socket.close();

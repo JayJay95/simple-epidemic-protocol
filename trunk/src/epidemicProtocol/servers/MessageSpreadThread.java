@@ -25,7 +25,8 @@ public class MessageSpreadThread extends Thread {
    private String message; //user message that will be sent 
    private PrintStream socketWriter; //stream used to write in the socket output
 
-   public MessageSpreadThread(TargetsList targetsList, MessagesHistory messagesHistory, int targetPort, String message, InetAddress senderHost) {
+   public MessageSpreadThread(TargetsList targetsList, MessagesHistory messagesHistory,
+                              int targetPort, String message, InetAddress senderHost) {
       this.targetsList = targetsList;
       this.messagesHistory = messagesHistory;
       this.targetPort = targetPort;
@@ -53,8 +54,8 @@ public class MessageSpreadThread extends Thread {
    @Override
    public void run() {
       if (senderHost.getHostAddress().equals(localHost.getHostAddress())) {
-         if (!messagesHistory.tryToAdd(message)) {
-            System.out.println(">> This message was already sent...");
+         if (!messagesHistory.tryToAdd(message, targetsList.getSize())) {
+            System.out.println(">> This message is already known...");
          } else {
             System.out.println(">> Sending a new message: " + message);
             targetHost = targetsList.getOneAddress();
@@ -70,6 +71,12 @@ public class MessageSpreadThread extends Thread {
 
             if (response == 0) {
                messagesHistory.addMessageEntryNegativeCount(responseMessage);
+               targetHost = targetsList.getOneAddress();
+
+               if (targetHost != null && messagesHistory.getMessageEntryStatus(responseMessage)) {
+                  message = responseMessage;
+                  sendMessage();
+               }
             } else {
                targetHost = targetsList.getOneAddress();
 
@@ -79,7 +86,7 @@ public class MessageSpreadThread extends Thread {
                }
             }
          } else {
-            if (!messagesHistory.tryToAdd(message)) {
+            if (!messagesHistory.tryToAdd(message, targetsList.getSize())) {
                targetHost = senderHost.getHostAddress();
                message = "#0" + message;
                sendMessage();
