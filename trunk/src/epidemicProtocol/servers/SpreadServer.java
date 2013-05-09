@@ -35,6 +35,7 @@ public class SpreadServer extends Thread {
 
       try {
          this.localHost = InetAddress.getLocalHost();
+         server = new ServerSocket(targetPort, 1000);
       } catch (Exception ex) {
          System.err.println("Error: " + ex.getMessage());
          ex.printStackTrace();
@@ -44,21 +45,12 @@ public class SpreadServer extends Thread {
    @Override
    public void run() {
       System.out.println("Epidemic Protocol Online...\n");
-
-      try {
-         server = new ServerSocket(targetPort);
-      } catch (IOException ex) {
-         System.err.println("Error: " + ex.getMessage());
-         ex.printStackTrace();
-      }
-
+      
       while (true) {
          try {
             socket = server.accept();
             socketReader = new Scanner(socket.getInputStream());
-            message = socketReader.nextLine();
-            
-            socket.close();
+            message = socketReader.nextLine();           
 
             if (socket.getInetAddress().getHostAddress().equals(localHost.getHostAddress())) {
                if (!messagesHistory.tryToAdd(message)) {
