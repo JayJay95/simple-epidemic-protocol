@@ -26,26 +26,26 @@ public class MessagesHistory {
     * @param message Message to be added.
     * @return True if the message was added.
     */
-   private boolean addMessage(String message) {
+   private boolean addMessage(String message, int maxNegativeCount) {
       if (messagesList.size() >= MAX_LIST_SIZE) {
          messagesList.remove(0);
 
-         return messagesList.add(new MessageEntry(message));
+         return messagesList.add(new MessageEntry(message, maxNegativeCount));
       } else {
-         return messagesList.add(new MessageEntry(message));
+         return messagesList.add(new MessageEntry(message, maxNegativeCount));
       }
    }
 
    private boolean contains(String message) {
-      MessageEntry messageWrapped = new MessageEntry(message);
+      MessageEntry messageWrapped = new MessageEntry(message, 0);
 
       return messagesList.contains(messageWrapped);
    }
 
-   public boolean tryToAdd(String message) {
+   public boolean tryToAdd(String message, int maxNegativeCount) {
       synchronized (this) {
          if (!contains(message)) {
-            return addMessage(message);
+            return addMessage(message, maxNegativeCount);
          }
 
          return false;
@@ -58,7 +58,7 @@ public class MessagesHistory {
             return false;
          }
 
-         MessageEntry messageWrapped = new MessageEntry(message);
+         MessageEntry messageWrapped = new MessageEntry(message, 0);
          int index = messagesList.indexOf(messageWrapped);
          MessageStatus status = messagesList.get(index).getStatus();
 
@@ -72,7 +72,7 @@ public class MessagesHistory {
             return;
          }
          
-         MessageEntry messageWrapped = new MessageEntry(message);
+         MessageEntry messageWrapped = new MessageEntry(message, 0);
          int index = messagesList.indexOf(messageWrapped);
          MessageEntry messageEntry = messagesList.get(index);
          messageEntry.addNegativeSendCount();

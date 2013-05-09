@@ -68,7 +68,7 @@ public class TargetsList {
       synchronized (this) {
          boolean result = addressesList.remove(address);
          updateIpList();
-         
+
          return result;
       }
    }
@@ -95,6 +95,12 @@ public class TargetsList {
          }
 
          return null;
+      }
+   }
+
+   public int getSize() {
+      synchronized (this) {
+         return addressesList.size();
       }
    }
 

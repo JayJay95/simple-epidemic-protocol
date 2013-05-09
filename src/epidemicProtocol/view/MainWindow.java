@@ -12,7 +12,8 @@ import javax.swing.text.DefaultCaret;
 
 /**
  * Class that have de main method of this project and the user interface. It starts the 3 initial
- * threads of the application: {@link epidemicProtocol.servers.TargetsListServer}, {@link epidemicProtocol.clients.BroadcastClient},
+ * threads of the application: {@link epidemicProtocol.servers.TargetsListServer},
+ * {@link epidemicProtocol.clients.BroadcastClient},
  * {@link epidemicProtocol.servers.SpreadServer} and
  * {@link epidemicProtocol.clients.MessagesSender}.
  *
@@ -44,7 +45,7 @@ public class MainWindow extends javax.swing.JFrame {
       redirectSystemStreams(); //redirect the System output to the TextArea in the interface
       messageTextField.requestFocus();
       this.setLocationRelativeTo(null);
-      targetsList = new TargetsList(ipListTextArea);      
+      targetsList = new TargetsList(ipListTextArea);
    }
 
    /**

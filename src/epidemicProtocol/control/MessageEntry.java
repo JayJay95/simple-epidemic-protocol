@@ -17,12 +17,17 @@ public class MessageEntry {
    private String message;
    private MessageStatus status;
    private int negativeSendCount;
-   private final int MAX_NEGATIVE_COUNT = 3;
+   private int maxNegativeCount;
 
-   public MessageEntry(String message) {
+   public MessageEntry(String message, int maxNegativeCount) {
       this.message = message;
       this.status = MessageStatus.INFECTIVE;
       negativeSendCount = 0;
+      this.maxNegativeCount = maxNegativeCount / 2;
+      
+      if (this.maxNegativeCount < 2) {
+         this.maxNegativeCount = 3;
+      }
    }
 
    public String getMessage() {
@@ -45,7 +50,7 @@ public class MessageEntry {
    public void addNegativeSendCount() {
       this.negativeSendCount++;
 
-      if (negativeSendCount > MAX_NEGATIVE_COUNT) {
+      if (negativeSendCount > maxNegativeCount) {
          this.status = MessageStatus.REMOVED;
       }
    }
