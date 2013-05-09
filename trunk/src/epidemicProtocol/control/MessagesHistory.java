@@ -12,7 +12,7 @@ import java.util.List;
 public class MessagesHistory {
 
    private List<MessageEntry> messagesList;
-   private final int MAX_LIST_SIZE = 100;
+   private final int MAX_LIST_SIZE = 200;
 
    public MessagesHistory() {
       this.messagesList = new ArrayList<>();
