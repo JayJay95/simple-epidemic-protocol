@@ -23,11 +23,11 @@ public class MainWindow extends javax.swing.JFrame {
    /**
     * Port that will be used to discover other computers in the local network.
     */
-   private static final int TARGETS_LIST_PORT = 60000;
+   private static final int TARGETS_LIST_PORT = 10000;
    /**
     * Port that will be used to send messages from one computer to other.
     */
-   private static final int SPREAD_SERVER_PORT = 60001;
+   private static final int SPREAD_SERVER_PORT = 9999;
    /**
     * IP's list that will be used in {@link epidemicProtocol.servers.TargetsListServer} to store
     * other computers in the network.
