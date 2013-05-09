@@ -17,7 +17,7 @@ public class MessageEntry {
    private String message;
    private MessageStatus status;
    private int negativeSendCount;
-   private final int MAX_NEGATIVE_COUNT = 2;
+   private final int MAX_NEGATIVE_COUNT = 3;
 
    public MessageEntry(String message) {
       this.message = message;

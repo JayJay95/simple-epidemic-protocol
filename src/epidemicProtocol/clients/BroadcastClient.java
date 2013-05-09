@@ -101,7 +101,7 @@ public class BroadcastClient extends Thread {
             }
 
             if (repeatTime < MAX_REPEAT_TIME) {
-               repeatTime += 5000;
+               repeatTime += 1000;
             }
 
             sleep(repeatTime);
