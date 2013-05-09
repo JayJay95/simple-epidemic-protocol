@@ -36,24 +36,46 @@ public class MessagesHistory {
       }
    }
 
-   public boolean contains(String message) {
+   private boolean contains(String message) {
       MessageEntry messageWrapped = new MessageEntry(message);
 
       return messagesList.contains(messageWrapped);
    }
 
    public boolean tryToAdd(String message) {
-      if (!contains(message)) {
-         return addMessage(message);
-      }
+      synchronized (this) {
+         if (!contains(message)) {
+            return addMessage(message);
+         }
 
-      return false;
+         return false;
+      }
    }
 
-   public MessageEntry getMessageEntry(String message) {
-      MessageEntry messageWrapped = new MessageEntry(message);
-      int index = messagesList.indexOf(messageWrapped);
+   public boolean getMessageEntryStatus(String message) {
+      synchronized (this) {
+         if (!contains(message)) {
+            return false;
+         }
 
-      return messagesList.get(index);
+         MessageEntry messageWrapped = new MessageEntry(message);
+         int index = messagesList.indexOf(messageWrapped);
+         MessageStatus status = messagesList.get(index).getStatus();
+
+         return (status == MessageStatus.INFECTIVE) ? true : false;
+      }
+   }
+   
+   public void addMessageEntryNegativeCount(String message) {
+      synchronized(this){
+         if (!contains(message)) {
+            return;
+         }
+         
+         MessageEntry messageWrapped = new MessageEntry(message);
+         int index = messagesList.indexOf(messageWrapped);
+         MessageEntry messageEntry = messagesList.get(index);
+         messageEntry.addNegativeSendCount();
+      }
    }
 }
