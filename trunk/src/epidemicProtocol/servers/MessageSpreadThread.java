@@ -37,7 +37,6 @@ public class MessageSpreadThread extends Thread {
          this.localHost = InetAddress.getLocalHost();
       } catch (Exception ex) {
          System.err.println("Error: " + ex.getMessage());
-         ex.printStackTrace();
       }
    }
 
@@ -55,8 +54,16 @@ public class MessageSpreadThread extends Thread {
    public void run() {
       if (senderHost.getHostAddress().equals(localHost.getHostAddress())) {
          if (!messagesHistory.tryToAdd(message, targetsList.getSize())) {
+            /*
+             * the user tries to send a message that already was received before
+             * just print a message alerting it
+             */
             System.out.println(">> This message is already known...");
          } else {
+            /*
+             * the user want to send a new message
+             * get one address from the targetsList and try to send the message
+             */
             System.out.println(">> Sending a new message: " + message);
             targetHost = targetsList.getOneAddress();
 
@@ -66,47 +73,72 @@ public class MessageSpreadThread extends Thread {
          }
       } else {
          if (message.charAt(0) == '#') {
+            /*
+             * the server received a response from other server            
+             */
             int response = Character.getNumericValue(message.charAt(1));
             String responseMessage = message.substring(2);
 
             if (response == 0) {
+               /*
+                * the response was negative, so this server sent a message to that server, 
+                * but it already known the message. Add a negative count in this message and try 
+                * to send the same massage to another computer
+                */
                messagesHistory.addMessageEntryNegativeCount(responseMessage);
                targetHost = targetsList.getOneAddress();
 
                if (targetHost != null && messagesHistory.getMessageEntryStatus(responseMessage)) {
                   message = responseMessage;
-                  sendMessage();
+                  sendMessage(); //sending message to another computer
                }
             } else {
+               /*
+                * the response was positive, so this server sent a message to that server and it
+                * didn't know the message yet. Just try to send the message to another computer.
+                */
                targetHost = targetsList.getOneAddress();
 
                if (targetHost != null && messagesHistory.getMessageEntryStatus(responseMessage)) {
                   message = responseMessage;
-                  sendMessage();
+                  sendMessage(); //sending message to another computer
                }
             }
          } else {
+            /*
+             * someone is sending a message to this server. This can be a new message or not.
+             */
             if (!messagesHistory.tryToAdd(message, targetsList.getSize())) {
+               /*
+                * the message is old, so send a negative response to the sender host.
+                */
                targetHost = senderHost.getHostAddress();
                message = "#0" + message;
-               sendMessage();
+               sendMessage(); //sending a negative response to the sender host 
             } else {
+               /*
+                * the message is new, so send the message to another computer and a positive
+                * response to the sender host.
+                */
                System.out.println(">> You've received a new message: " + message);
                targetHost = targetsList.getOneAddress();
 
                if (targetHost != null) {
-                  sendMessage();
+                  sendMessage(); //sending message to another computer
                }
 
                targetHost = senderHost.getHostAddress();
                message = "#1" + message;
-               sendMessage();
+               sendMessage(); //sending a positive response to the sender host 
             }
          }
       }
    }
 
-   public void sendMessage() {
+   /**
+    * Creates a socket with the targetHost and the targetPort. So send a message in this socket.
+    */
+   private void sendMessage() {
       try {
          socket = new Socket(targetHost, targetPort);
          socketWriter = new PrintStream(socket.getOutputStream());
@@ -119,7 +151,6 @@ public class MessageSpreadThread extends Thread {
          System.err.println("Error: " + ex.getMessage());
          System.err.println("Deleting " + targetHost + " from targets list...");
          targetsList.tryToRemove(targetHost);
-         ex.printStackTrace();
       }
    }
 }

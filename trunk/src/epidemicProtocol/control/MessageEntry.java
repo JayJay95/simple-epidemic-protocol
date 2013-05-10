@@ -19,25 +19,35 @@ public class MessageEntry {
    private int negativeSendCount;
    private int maxNegativeCount;
 
-   public MessageEntry(String message, int maxNegativeCount) {
+   /**
+    * Creates a new message entry with the message and maxNegativeCount parameters. The
+    * maxNegativeCount is used to change the status of the message from
+    * {@link epidemicProtocol.control.MessageStatus#INFECTIVE} to
+    * {@link epidemicProtocol.control.MessageStatus#REMOVED}.    
+    */
+   public MessageEntry(String message, int targetsListSize) {
       this.message = message;
       this.status = MessageStatus.INFECTIVE;
       negativeSendCount = 0;
-      this.maxNegativeCount = maxNegativeCount / 2;
       
+      /*
+       * calculates the maxNegativeCount based in the TargetsList size in that moment 
+       */
+      this.maxNegativeCount = targetsListSize / 2;
+
       if (this.maxNegativeCount < 2) {
          this.maxNegativeCount = 3;
       }
    }
-
+  
    public String getMessage() {
       return message;
    }
-
+   
    public MessageStatus getStatus() {
       return status;
    }
-
+   
    public int getNegativeSendCount() {
       return negativeSendCount;
    }
@@ -57,6 +67,8 @@ public class MessageEntry {
 
    /**
     * Override the standard equals method to make the message attribute the search key.
+    *
+    * @param other
     */
    @Override
    public boolean equals(Object other) {

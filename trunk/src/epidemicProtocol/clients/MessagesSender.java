@@ -34,8 +34,7 @@ public class MessagesSender extends Thread {
       try {
          this.localHost = InetAddress.getLocalHost();
       } catch (Exception ex) {
-         System.err.println("Error: " + ex.getMessage());
-         ex.printStackTrace();
+         System.err.println("Error: " + ex.getMessage());         
       }
    }
 
@@ -64,6 +63,8 @@ public class MessagesSender extends Thread {
 
       /*
        * Create a new socket and write in it's output the user's message
+       * The new socket uses the localHost address, to send this mesage to the local SpreadServer
+       * In the local SpreadServer this message will be spreaded to other computer in the LAN
        */
       try {
          socket = new Socket(localHost, targetPort);
@@ -74,8 +75,7 @@ public class MessagesSender extends Thread {
          socketWriter.close();
          socket.close();
       } catch (Exception ex) {
-         System.err.println("Error: " + ex.getMessage());
-         ex.printStackTrace();
+         System.err.println("Error: " + ex.getMessage());         
       }
    }
 }

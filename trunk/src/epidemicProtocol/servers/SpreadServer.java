@@ -22,7 +22,7 @@ public class SpreadServer extends Thread {
    private String message;
    private ServerSocket server;
    private Socket socket;
-
+   
    public SpreadServer(TargetsList targetsList, int port) {
       this.messagesHistory = new MessagesHistory();
       this.targetsList = targetsList;
@@ -31,8 +31,7 @@ public class SpreadServer extends Thread {
       try {
          server = new ServerSocket(targetPort, 1000);
       } catch (Exception ex) {
-         System.err.println("Error: " + ex.getMessage());
-         ex.printStackTrace();
+         System.err.println("Error: " + ex.getMessage());         
       }
    }
 
@@ -42,19 +41,18 @@ public class SpreadServer extends Thread {
 
       while (true) {
          try {
-            socket = server.accept();
+            socket = server.accept(); //wait for new connections
             socketReader = new Scanner(socket.getInputStream());
-            message = socketReader.nextLine();
+            message = socketReader.nextLine(); //read the request
             InetAddress senderHost = socket.getInetAddress();
 
             new MessageSpreadThread(targetsList, messagesHistory, targetPort, message, senderHost)
-                    .start();
+                    .start(); //open a MessageSpreadThread to handle the request
 
             socketReader.close();
             socket.close();
          } catch (Exception ex) {
-            System.err.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
+            System.err.println("Error: " + ex.getMessage());            
          }
       }
    }

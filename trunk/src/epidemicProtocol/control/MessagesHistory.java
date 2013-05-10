@@ -42,6 +42,12 @@ public class MessagesHistory {
       return messagesList.contains(messageWrapped);
    }
 
+   /**
+    *
+    * @param message
+    * @param maxNegativeCount
+    * @return
+    */
    public boolean tryToAdd(String message, int maxNegativeCount) {
       synchronized (this) {
          if (!contains(message)) {
@@ -52,6 +58,12 @@ public class MessagesHistory {
       }
    }
 
+   /**
+    * Get the status of a message.
+    * 
+    * @return true for {@link epidemicProtocol.control.MessageStatus#INFECTIVE} and false for
+    * {@link epidemicProtocol.control.MessageStatus#REMOVED} or in case of a message not found.
+    */
    public boolean getMessageEntryStatus(String message) {
       synchronized (this) {
          if (!contains(message)) {
@@ -65,13 +77,16 @@ public class MessagesHistory {
          return (status == MessageStatus.INFECTIVE) ? true : false;
       }
    }
-   
+
+   /**
+    * Add a negative send count to the specified message.     
+    */
    public void addMessageEntryNegativeCount(String message) {
-      synchronized(this){
+      synchronized (this) {
          if (!contains(message)) {
             return;
          }
-         
+
          MessageEntry messageWrapped = new MessageEntry(message, 0);
          int index = messagesList.indexOf(messageWrapped);
          MessageEntry messageEntry = messagesList.get(index);
