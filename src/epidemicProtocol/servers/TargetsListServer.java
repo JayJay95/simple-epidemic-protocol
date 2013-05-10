@@ -14,13 +14,13 @@ import java.net.DatagramSocket;
 public class TargetsListServer extends Thread {
 
    private TargetsList targetsList;
-   private int bindPort;
+   private int bindPort; 
    private DatagramSocket socket;
    private DatagramPacket packet;
    private String messageReceived;
    private byte[] packetBytes;
    private String anAddress;
-
+   
    public TargetsListServer(TargetsList targetsList, int port) {
       this.targetsList = targetsList;
       this.bindPort = port;
@@ -30,8 +30,7 @@ public class TargetsListServer extends Thread {
          socket = new DatagramSocket(this.bindPort);
          packet = new DatagramPacket(packetBytes, packetBytes.length);
       } catch (Exception ex) {
-         System.err.println("Error: " + ex.getMessage());
-         ex.printStackTrace();
+         System.err.println("Error: " + ex.getMessage());         
       }
    }
 
@@ -39,7 +38,7 @@ public class TargetsListServer extends Thread {
    public void run() {
       while (true) {
          try {
-            socket.receive(packet);
+            socket.receive(packet); //wait to receive a packet
             messageReceived = new String(packet.getData());
 
             /*
@@ -47,11 +46,10 @@ public class TargetsListServer extends Thread {
              */
             if (messageReceived.equals("#")) {
                anAddress = packet.getAddress().getHostAddress();
-               targetsList.tryToAdd(anAddress);
+               targetsList.tryToAdd(anAddress); //try to add the address in the targetsList
             }
          } catch (Exception ex) {
-            System.err.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
+            System.err.println("Error: " + ex.getMessage());            
          }
       }
    }

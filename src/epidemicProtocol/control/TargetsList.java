@@ -24,6 +24,9 @@ public class TargetsList {
     */
    private int auxCount;
 
+   /**
+    * Create a TargetsList with a JTextArea parameter to show the list of IPs in the user interface.     
+    */
    public TargetsList(JTextArea output) {
       this.output = output;
       addressesList = new ArrayList<>();
@@ -32,8 +35,7 @@ public class TargetsList {
       try {
          localHost = InetAddress.getLocalHost().getHostAddress();
       } catch (Exception ex) {
-         System.err.println("Error: " + ex.getMessage());
-         ex.printStackTrace();
+         System.err.println("Error: " + ex.getMessage());         
       }
    }
 
@@ -97,13 +99,16 @@ public class TargetsList {
          return null;
       }
    }
-
+   
    public int getSize() {
       synchronized (this) {
          return addressesList.size();
       }
    }
 
+   /**
+    * Update the user's interface with a list of IPs in this class.
+    */
    private void updateIpList() {
       output.setText("");
 
