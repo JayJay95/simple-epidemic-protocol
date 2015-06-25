@@ -1,0 +1,1 @@
+Implementation of a simple epidemic/gossip protocol, that spread String messages in a local Network.
